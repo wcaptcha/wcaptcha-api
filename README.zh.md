@@ -61,3 +61,12 @@ cp .env .env.production
 之后按照提示操作即可。
 
 
+## 设置 wcaptcha-js 使用私有化部署的服务
+
+```javascript
+w = new wcaptcha(API_KEY)
+w.setEndpoint("https://your-deployed-service.com/")
+
+// 接下来就可以正常使用 wcaptcha 了
+// w.bind("any-selector")
+```

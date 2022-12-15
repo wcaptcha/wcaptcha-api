@@ -62,3 +62,14 @@ cp .env .env.production
 ```
 
 then follow the instructions to finish deployment.
+
+
+## Set wcaptcha-js To Use Private Deployed Service
+
+```javascript
+w = new wcaptcha(API_KEY)
+w.setEndpoint("https://your-deployed-service.com/")
+
+// Then use wcaptcha as usual
+// w.bind("any-selector")
+```
