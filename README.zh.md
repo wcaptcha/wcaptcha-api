@@ -54,6 +54,7 @@ npm i -g vercel
 然后直接在代码目录下运行：
 
 ```shell
+cp .env .env.production
 ./vercel-deploy.sh
 ```
 

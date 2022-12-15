@@ -57,6 +57,7 @@ npm i -g vercel
 Then run:
 
 ```shell
+cp .env .env.production
 ./vercel-deploy.sh
 ```
 
