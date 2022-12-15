@@ -1,0 +1,5 @@
+.env
+.env.production
+gin-bin
+.vercel
+wcaptcha
