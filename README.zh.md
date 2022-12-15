@@ -44,7 +44,14 @@ curl -X post localhost:8090/site/update --data "api_secret=YOUR_API_SECRET&hardn
 
 ### 部署到 Vercel
 
-首先安装 vercel 的命令行，然后直接在代码目录下运行
+请注意，如果要部署到 vercel，则配置文件中不能使用 `file` 类型的存储。因为 vercel 是无服务模式，它的文件系统上内容是不会被保存的。
+
+首先安装 vercel 的命令行：
+```shell
+npm i -g vercel
+```
+
+然后直接在代码目录下运行：
 
 ```shell
 ./vercel-deploy.sh
