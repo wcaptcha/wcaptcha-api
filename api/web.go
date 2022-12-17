@@ -184,7 +184,7 @@ func webCaptchaProblem(c *gin.Context) {
 	//question := fmt.Sprintf("%s.%s.%s", nB64, xB64, hB64)
 
 	// 以 1% 的概率去触发 Nonce 清除操作
-	go nonceClean(001)
+	go nonceCleanup(nonceCleanupProb)
 
 	c.JSON(200, gin.H{
 		"code": 0,
@@ -205,6 +205,8 @@ func webCaptchaProblem(c *gin.Context) {
 // 其中 X 是此前服务器返回的 x 的原始内容；Y 是计算结果，为小写的十六进制表达式；H 为此前服务器返回的签名原始内容；
 // <del>N 为模数，为小写的十六进制格式</del>
 func webCaptchaVerify(c *gin.Context) {
+	var verifyElapsed time.Duration
+
 	// 1. 解析客户端数据
 	var req struct {
 		Prove  string `form:"prove" binding:"required"`
@@ -265,16 +267,19 @@ func webCaptchaVerify(c *gin.Context) {
 	}
 
 	/// 3.1 使用最新的 RSAKey 检查结果是否正确
+	stime := time.Now()
+
 	if ts-site.RSAKeyCreateTime < RSA_KEY_TTL {
 		v = vdf.New(site.RSAKey.Primes[0], site.RSAKey.Primes[1])
-		stime := time.Now()
+
 		if v.Verify(x, site.Hardness, y) == true {
 			// 验证成功，什么都不用做
 			isCorrect = true
 		} else {
 			isCorrect = false
 		}
-		log.Printf("校验证明耗时 %v，模数长度为 %d", time.Now().Sub(stime), site.RSAKey.Primes[0].BitLen()*2)
+
+		log.Printf("校验证明耗时 %v，模数长度为 %d", verifyElapsed, site.RSAKey.Primes[0].BitLen()*2)
 	} else {
 		log.Printf("网站 %s 的 RSAKey 已经超时了，不会使用 RSAKey 进行检查", site.APIKey)
 	}
@@ -293,11 +298,13 @@ func webCaptchaVerify(c *gin.Context) {
 		}
 	}
 
+	verifyElapsed = time.Now().Sub(stime)
+
 	// 5. 若验证成功则记录一次 nonce
 	var msg string
 	if isCorrect {
 		nonceSet(hRaw)
-		msg = "Prove is correct"
+		msg = fmt.Sprintf("Prove is correct. Verification takes %v", verifyElapsed)
 	} else {
 		msg = "Prove is INVALID"
 	}
@@ -306,8 +313,9 @@ func webCaptchaVerify(c *gin.Context) {
 		"code":    0,
 		"message": msg,
 		"data": gin.H{
-			"prove":      req.Prove,
-			"is_correct": isCorrect,
+			"prove":          req.Prove,
+			"is_correct":     isCorrect,
+			"verify_time_ms": float64(verifyElapsed.Microseconds()) / 1000,
 		},
 	})
 }

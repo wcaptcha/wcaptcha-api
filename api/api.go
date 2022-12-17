@@ -25,6 +25,9 @@ const (
 	RSA_KEY_TTL  = 600
 )
 
+// 执行 Nonce 清理程序的概率
+var nonceCleanupProb float64 = 0.01
+
 // var S3 *s3kv.Storage
 var Store store.Storer
 
@@ -139,6 +142,13 @@ func InitGin() *gin.Engine {
 		os.Exit(0)
 	}
 
+	nonceCleanupProb, err = strconv.ParseFloat(os.Getenv("NONCE_CLEANUP_PROB"), 64)
+	if err != nil {
+		log.Printf("未设定 NONCE_CLEANUP_PROB 环境变量或设置不正确，将使用默认值 0.01")
+		nonceCleanupProb = 0.01
+	}
+	log.Printf("Nonce 清理程序触发概率被设定为 %f%%", nonceCleanupProb*100)
+
 	route := gin.Default()
 
 	route.Use(cors.Default())
@@ -216,7 +226,7 @@ func nonceSet(nonce string) {
 var isNonceCleaning bool = false
 
 // 以 prob 的概率，触发清理过期的 nonce 操作
-func nonceClean(prob float32) {
+func nonceCleanup(prob float64) {
 	if isNonceCleaning == true {
 		log.Printf("当前有另一个 Nonce 清理程序正在进行中，不会重复运行 Nonce 清理程序")
 		return
@@ -226,7 +236,7 @@ func nonceClean(prob float32) {
 		isNonceCleaning = false
 	}()
 
-	r := rand.Float32()
+	r := rand.Float64()
 	if r >= prob {
 		return
 	}
