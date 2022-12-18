@@ -27,7 +27,7 @@ Next, create a configuration file named `.env`, you can just `cp .env.example .e
 Once the configuration is set, you can start the service.
 
 ```shell
-. /wcaptcha
+./wcaptcha
 ```
 
 Now let's create a site.
