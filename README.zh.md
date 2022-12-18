@@ -5,7 +5,10 @@ Backend API of wCaptcha
 
 wCaptcha 提供官方的服务，如果不想自己部署，可以直接到使用[官方的服务](https://wcaptcha.pingflash.com/)。
 
-如果想要私有化部署，参考下面的操作步骤。
+如果想要私有化部署，参考下面的操作步骤。目前提供三种部署方式：
+* 常规部署
+* Docker 部署
+* Vercel 部署
 
 ### 常规部署
 
@@ -40,6 +43,14 @@ curl -X post localhost:8090/site/update --data "api_secret=YOUR_API_SECRET&hardn
 ```
 其中的 HARDNESS 是一个数字，站点创建后默认的 HARDNESS 是 `4194303`，即`2^22-1`，你可以填写任意数字。
 
+### 使用 Docker 部署
+
+```shell
+docker pull wcaptcha/wcaptcha-api
+docker run -p 8090:8090 -v /data:/data wcaptcha/wcaptcha-api
+```
+
+Docker 部署默认使用 `file` 作为存储，可通过环境变量修改设置。具体的配置项请参考 .env.example 文件。
 
 
 ### 部署到 Vercel

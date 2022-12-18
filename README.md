@@ -7,7 +7,7 @@ Backend API of wCaptcha
 
 wCaptcha provides official services, so if you don't want to deploy it yourself, you can go directly to using [official services](https://wcaptcha.pingflash.com/).
 
-If you want to deploy privately, follow the steps below.
+If you want to deploy privately, follow the steps below. 
 
 ### General Deployment
 
@@ -42,7 +42,14 @@ curl -X post localhost:8090/site/update --data "api_secret=YOUR_API_SECRET&hardn
 ```
 Where HARDNESS is a number, the default HARDNESS for a site is `4194303` (`2^22-1`), you can set any number.
 
+### Docker Deployment
 
+```shell
+docker pull wcaptcha/wcaptcha-api
+docker run -p 8090:8090 -v /data:/data wcaptcha/wcaptcha-api
+```
+
+When using docker deployment, the default STORAGE is `file`. This is configurable via environment variables. See `.env.example` for available environment variables.
 
 ### Deploy to Vercel
 
