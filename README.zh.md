@@ -39,7 +39,7 @@ curl -X POST localhost:8090/site/create
 
 若要修改难度，可执行：
 ```shell
-curl -X post localhost:8090/site/update --data "api_secret=YOUR_API_SECRET&hardness=HARDNESS
+curl -X POST localhost:8090/site/update --data "api_secret=YOUR_API_SECRET&hardness=HARDNESS
 ```
 其中的 HARDNESS 是一个数字，站点创建后默认的 HARDNESS 是 `4194303`，即`2^22-1`，你可以填写任意数字。
 

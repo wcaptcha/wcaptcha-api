@@ -38,7 +38,7 @@ The result is returned in JSON format, containing `api_key` and `api_secret`, wh
 
 To modify the difficulty (aka client proofing time), you can execute.
 ```shell
-curl -X post localhost:8090/site/update --data "api_secret=YOUR_API_SECRET&hardness=HARDNESS
+curl -X POST localhost:8090/site/update --data "api_secret=YOUR_API_SECRET&hardness=HARDNESS
 ```
 Where HARDNESS is a number, the default HARDNESS for a site is `4194303` (`2^22-1`), you can set any number.
 
