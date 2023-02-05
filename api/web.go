@@ -10,7 +10,7 @@ import (
 	"math/rand"
 	"strings"
 	"time"
-
+	"net/http"
 	"github.com/gin-gonic/gin"
 	"github.com/greensea/vdf"
 )
@@ -326,4 +326,8 @@ func webError(c *gin.Context, code int, msg string) {
 		"code":    code,
 		"message": msg,
 	})
+}
+
+func Hello(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Hello World!")
 }
